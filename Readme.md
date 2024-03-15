@@ -26,6 +26,19 @@ pip install torch torchvision torchaudio
 安装windows版本下的bitsandbytes参考这个，有别人编译好的版本，pip 直接下载的话与win不兼容
 https://github.com/jllllll/bitsandbytes-windows-webui
 
+### 模型下载
+
+chatglm6b:
+```
+git clone https://www.modelscope.cn/ZhipuAI/chatglm3-6b.git
+```
+
+Baichuan2-13B-4bit:
+```
+git clone https://www.modelscope.cn/baichuan-inc/Baichuan2-13B-Chat-4bits.git
+```
+
+
 ## 2. Demo 使用
 本demo是使用开源模型，chatglm，对尽调报告进行分析后，提取所使用的因子的应用。在开始前需要检查以下几项：
 1. 所有尽调报告在根目录的"尽调报告"目录下储存
