@@ -5,16 +5,19 @@ import pandas as pd
 import yaml
 
 
+# 把prompt中的xxxxxx替换成尽调报告中的对应内容
 def get_prompt(text, prompt):
     return prompt.replace('xxxxxx', text)
 
 
+# 生成百川所需的特定的prompt
 def get_prompt_baichuan(text, prompt):
     messages = []
     messages.append({"role": "user", "content": get_prompt(text, prompt)})
     return messages
 
 
+# 从指定目录中获取尽调报告的docx文档，然后提取出“配置逻辑”的内容
 def extract_content_from_docx(folder_path, regex_pattern):
     extracted_contents = []
     name_list = []
@@ -70,3 +73,9 @@ def get_prompt_configs(prompt_class):
     with open('configs/prompts.yaml', 'r', encoding='utf-8') as file:
         config = yaml.safe_load(file)
     return config[prompt_class].replace('\n', '')
+
+
+def get_text_configs(text_class):
+    with open('configs/content_extraction.yaml', 'r', encoding='utf-8') as file:
+        config = yaml.safe_load(file)
+    return config[text_class].replace('\n', '').replace('"', '')
