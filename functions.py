@@ -5,14 +5,16 @@ import pandas as pd
 import yaml
 
 # 定义dic
+
 prompts_match_dic = {
-    '配置逻辑': ['因子组成', '模型种类'],
-    '公司概况': ['策略类型']
+    '因子组成': '配置逻辑',
+    '模型种类': '配置逻辑',
 }
 
 dic_content_extraction = {'配置逻辑': r'配置逻辑(.*?)持仓特征',
                           '公司概况': r'公司概况(.*?)股东情况',
-                          '交易风格': r'公司概况(.*?)股东情况'}
+                          '交易风格': r'公司概况(.*?)股东情况',
+                          '配置逻辑+持仓特征': r'配置逻辑(.*?)交易风格'}
 
 
 # 把prompt中的xxxxxx替换成尽调报告中的对应内容
@@ -85,17 +87,12 @@ def get_answer_from_docx_baichuan(yaml_list, model):
     for prompt_class in yaml_list:
         df_dic[prompt_class] = []
         prompt = get_prompt_configs(prompt_class)
-        if prompt_class in prompts_match_dic['配置逻辑']:
-            # 按照 yaml_list中的要求，提取prompt并使用大语言模型
-            extracted_contents = extract_content_from_docx("尽调报告", dic_content_extraction['配置逻辑'])
-            responses = get_answer_template(extracted_contents, prompt, model)
-            df_dic[prompt_class] = responses
-        elif prompt_class in prompts_match_dic['公司概况']:
-            extracted_contents = extract_content_from_docx("尽调报告", dic_content_extraction['公司概况'])
-            responses = get_answer_template(extracted_contents, prompt, model)
-            df_dic[prompt_class] = responses
+        prompt_key = prompts_match_dic[prompt_class]
+        # 按照 yaml_list中的要求，提取prompt并使用大语言模型
+        extracted_contents = extract_content_from_docx("尽调报告", dic_content_extraction[prompt_key])
+        responses = get_answer_template(extracted_contents, prompt, model)
+        df_dic[prompt_class] = responses
     return pd.DataFrame(df_dic)
-
 
 
 # 获取config的函数
