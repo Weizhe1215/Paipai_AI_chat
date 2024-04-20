@@ -8,13 +8,16 @@ import yaml
 
 prompts_match_dic = {
     '因子组成': '配置逻辑',
+    '因子挖掘': '配置逻辑',
     '模型种类': '配置逻辑',
+    '选股范围': '配置逻辑+持仓特征',
+    '交易频率': '交易风格'
 }
 
 dic_content_extraction = {'配置逻辑': r'配置逻辑(.*?)持仓特征',
                           '公司概况': r'公司概况(.*?)股东情况',
-                          '交易风格': r'公司概况(.*?)股东情况',
-                          '配置逻辑+持仓特征': r'配置逻辑(.*?)交易风格'}
+                          '交易风格': r'持仓特征(.*?)容量',
+                          '配置逻辑+持仓特征': r'配置逻辑(.*?)容量'}
 
 
 # 把prompt中的xxxxxx替换成尽调报告中的对应内容
@@ -42,10 +45,10 @@ def extract_content_from_docx(folder_path, regex_pattern):
             # 读取文档中的所有段落
             full_text = '\n'.join([para.text for para in doc.paragraphs])
             # 使用正则表达式匹配内容
-            matches = re.findall(regex_pattern, full_text, re.DOTALL)
-            matches[0] = matches[0].replace('\n', '')
+            matches = re.search(regex_pattern, full_text, re.DOTALL)
+            matches = matches.group().replace('\n', '')
             if matches:
-                extracted_contents.extend(matches)
+                extracted_contents.append(matches)
     return extracted_contents
 
 
@@ -72,18 +75,22 @@ def get_answer_from_docx_glm(extracted_contents, prompt1, name_list, model, toke
 
 def get_answer_template(extracted_contents, prompt, model):
     response_list = []
+    count = 0
     for text in extracted_contents:
         response = model(get_prompt_baichuan(text, prompt))
         response_list.append(response['response'])
+        print(count)
+        count += 1
     return response_list
 
 
-def get_answer_from_docx_baichuan(yaml_list, model):
+def get_answer_from_docx_baichuan(yaml_list, model, doc_path):
     name_list = get_name_list('尽调报告')
     # 读取 n 个yaml_list中的元素，并创建字典
     df_dic = {
         "私募名称": name_list
     }
+
     for prompt_class in yaml_list:
         df_dic[prompt_class] = []
         prompt = get_prompt_configs(prompt_class)
@@ -92,6 +99,7 @@ def get_answer_from_docx_baichuan(yaml_list, model):
         extracted_contents = extract_content_from_docx("尽调报告", dic_content_extraction[prompt_key])
         responses = get_answer_template(extracted_contents, prompt, model)
         df_dic[prompt_class] = responses
+
     return pd.DataFrame(df_dic)
 
 
