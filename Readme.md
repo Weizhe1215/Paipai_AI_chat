@@ -1,10 +1,10 @@
-# 基于ChatGlm对尽调文本进行分析 Demo
+# 基于开源大模型Baichuan-13B 对尽调文本进行分析 Demo
 
 ## 1. 开始之前
 
 ### 硬件配置
-GPU推理：支持cuda，且显存>=6G \
-CPU推理：内存频率越高越好，内存>=16G，最好有32G
+GPU推理：支持cuda，且显存>=16G \
+CPU推理：内存频率越高越好，内存>=32G
 
 ### 环境配置
 
@@ -40,7 +40,7 @@ git clone https://www.modelscope.cn/baichuan-inc/Baichuan2-13B-Chat-4bits.git
 
 
 ## 2. Demo 使用
-本demo是使用开源模型，chatglm，对尽调报告进行分析后，提取所使用的因子的应用。在开始前需要检查以下几项：
+本demo是使用开源模型，Baichuan-13B，对尽调报告进行分析后，提取所使用的因子的应用。在开始前需要检查以下几项：
 1. 所有尽调报告在根目录的"尽调报告"目录下储存
 2. 把下载好的模型，放在根目录下，模型文件夹为chatglm6b
 3. functions.py 为运行项目所必须的函数
