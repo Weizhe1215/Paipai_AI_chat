@@ -13,12 +13,14 @@ class LLMAnalyzer:
             '因子挖掘': '配置逻辑',
             '模型种类': '配置逻辑',
             '选股范围': '配置逻辑+持仓特征',
-            '交易频率': '交易风格'
+            '交易频率': '交易风格',
+            '持股数量': '持仓特征'
         }
 
         self.dic_content_extraction = {'配置逻辑': r'配置逻辑(.*?)持仓特征',
                                        '公司概况': r'公司概况(.*?)股东情况',
-                                       '交易风格': r'持仓特征(.*?)容量',
+                                       '交易风格': r'交易风格(.*?)容量',
+                                       '持仓特征': r'持仓特征(.*?)交易风格',
                                        '配置逻辑+持仓特征': r'配置逻辑(.*?)容量'}
 
     # 获取config的函数
@@ -55,6 +57,9 @@ class LLMAnalyzer:
                 file_path = os.path.join(folder_path, file)
                 # 打开Word文档
                 doc = Document(file_path)
+                for para in doc.paragraphs:
+                    if "交易特征" in para.text:
+                        para.text = para.text.replace("交易特征", "交易风格")
                 # 读取文档中的所有段落
                 full_text = '\n'.join([para.text for para in doc.paragraphs])
                 # 使用正则表达式匹配内容
