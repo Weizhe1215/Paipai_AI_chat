@@ -26,7 +26,8 @@ class LLMAnalyzer:
             '因子挖掘': '配置逻辑',
             '模型种类': '配置逻辑',
             '选股范围': '配置逻辑+持仓特征',
-            '交易频率': '交易风格',
+            '最高换手': '交易风格',
+            '最低换手': '交易风格',
             '持股数量': '持仓特征'
         }
 
@@ -52,17 +53,6 @@ class LLMAnalyzer:
             return config[prompt_class].replace('\n', '')
         except Exception as e:
             logging.error(f"Error reading prompt configs: {e}")
-            return None
-
-    @staticmethod
-    def get_text_configs(text_class):
-        # 从YAML配置文件中读取并返回对应的文本提取配置
-        try:
-            with open('configs/content_extraction.yaml', 'r', encoding='utf-8') as file:
-                config = yaml.safe_load(file)
-            return config[text_class].replace('\n', '').replace('"', '')
-        except Exception as e:
-            logging.error(f"Error reading text configs: {e}")
             return None
 
     @staticmethod
