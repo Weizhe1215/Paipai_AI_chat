@@ -52,7 +52,7 @@ class LLMAnalyzer:
         extracted_contents = []
         # 遍历文件夹中的所有文件
         for file in os.listdir(folder_path):
-            if file.endswith(".docx"):
+            if file.endswith(".docx") or file.endswith(".doc"):
                 # 构造完整的文件路径
                 file_path = os.path.join(folder_path, file)
                 # 打开Word文档
@@ -60,6 +60,10 @@ class LLMAnalyzer:
                 for para in doc.paragraphs:
                     if "交易特征" in para.text:
                         para.text = para.text.replace("交易特征", "交易风格")
+                    if "策略容量" in para.text:
+                        para.text = para.text.replace("策略容量", "容量")
+                    if "持仓风格" in para.text:
+                        para.text = para.text.replace("持仓风格", "持仓特征")
                 # 读取文档中的所有段落
                 full_text = '\n'.join([para.text for para in doc.paragraphs])
                 # 使用正则表达式匹配内容
